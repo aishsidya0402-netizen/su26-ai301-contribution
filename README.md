@@ -2,33 +2,31 @@
 
 ## Phase I — Issue Selection
 
-Issue: [repo-header-info occasionally fails to load, leaving blank behind #9613](https://github.com/refined-github/refined-github/issues/9613)
+**Issue:** [Escape character not working while using regular expressions in web interface #1486](https://github.com/ivre/ivre/issues/1486)
 
-Problem Summary:
-The `repo-header-info` feature in refined-github adds padding to GitHub's 
-site header so its content doesn't overlap. When the feature fails to load 
-correctly, the padding it added is never removed, leaving a visible blank 
-space in the header. The fix requires ensuring the padding is cleaned up 
-even on failure, via try/catch or a timeout fallback.
+**Problem Summary:**
+In IVRE's web interface, backslash escape characters are stripped when 
+using regular expressions in search filters. This means users cannot 
+search for special regex characters like `.` or `*` — the backslash 
+is removed before the query reaches the search engine, returning 
+incorrect results.
 
-Why I Chose This Issue:
-I chose this issue because it sits at the intersection of my JavaScript/
-TypeScript skills and a real, user-facing visual bug in a project used by 
-over 31,000 developers. refined-github is maintained by Sindresorhus, one 
-of the most prolific open source developers in the JavaScript ecosystem, 
-which means the review process and codebase conventions will reflect 
-professional-grade standards — exactly the kind of experience I want 
-before entering the job market.
+**Why I Chose This Issue:**
+I chose this issue because it's a well-scoped frontend bug in a real 
+network recon framework used by security professionals. The maintainer 
+confirmed it's a genuine bug and explicitly labeled it help wanted, 
+signaling they want outside contributions. The bug lives in the web 
+interface layer, which aligns with my JavaScript/TypeScript skills.
 
-The bug itself is well-scoped: the maintainer (fregante) has already 
-identified the root cause and suggested the fix approach (try/catch or 
-timeout mechanism), so I know what "done" looks like. The feature area is 
-a single component rather than a sprawling system, making it achievable 
-in 3–4 weeks. I'm also interested in learning how browser extensions handle 
-async DOM loading failures, which is a pattern that comes up in frontend 
-engineering work broadly.
+The fix is clearly defined: backslash characters should be preserved 
+and passed correctly to the search engine. The maintainer even 
+acknowledged the frontend is not their strength, which means a 
+contributor who can navigate frontend code will be especially valuable 
+here. I'm also interested in learning how security tools handle 
+regex input sanitization, which is a pattern relevant to many 
+backend and security engineering roles.
 
-Left a comment on the issue introducing myself and confirming my approach 
-with the maintainer.
+Left a comment on the issue asking for pointers on the relevant 
+frontend file.
 
-Status: Phase I Complete
+**Status:** Phase I Complete
