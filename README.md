@@ -30,3 +30,42 @@ Left a comment on the issue asking for pointers on the relevant
 frontend file.
 
 **Status:** Phase I Complete
+
+## Phase II — Reproduce & Plan
+
+### Reproduction Process
+
+#### Environment Setup
+Cloned fork locally on Windows. No server setup needed — reproduced 
+the bug through code analysis by tracing the `parse_params` function 
+in `web/static/ivre/params.js`. Implemented the fix directly on the 
+working branch.
+**Working branch:** https://github.com/aishsidya0402-netizen/ivre/tree/fix-issue-1486
+
+#### Steps to Reproduce
+1. Clone the ivre repository
+2. Open `web/static/ivre/params.js`
+3. In `parse_params`, locate the state machine (states 0, 1, 2)
+4. Trace what happens when a backslash `\` is typed in a filter — e.g. `hostname:/\.google\./`
+5. **Expected:** `curtoken` receives `\.google\.` (backslash preserved)
+6. **Actual:** `curtoken` only receives `.google.` — the backslash is added to `curtokenprotected` (display only) but never to `curtoken` (the value sent to the API)
+
+### Solution Approach
+
+**Understand:** In `parse_params`, when a backslash is encountered in states 0, 1, and 2, the code adds it to `curtokenprotected` (what's shown in the UI) but not to `curtoken` (what gets sent to the backend API). The backslash silently disappears from the query.
+
+**Match:** States 3, 4, 5, and 6 in the same function correctly add characters to both `curtoken` and `curtokenprotected`. The fix follows the same pattern already used throughout the function.
+
+**Plan:**
+1. In state 0, `case "\\"`: add `curtoken += curchar;`
+2. In state 1, `case "\\"`: add `curtoken += curchar;`
+3. In state 2, `case "\\"`: add `curtoken += curchar;`
+4. Verify no other filter types are broken by the change
+
+**File changed:** `web/static/ivre/params.js`
+
+**Review:** Will check `CONTRIBUTING.md` before opening PR.
+
+**Evaluate:** After fix, a regex filter like `hostname:/\.google\./` should pass the backslash through to the API correctly.
+
+**Status:** Phase II Complete
