@@ -69,3 +69,34 @@ working branch.
 **Evaluate:** After fix, a regex filter like `hostname:/\.google\./` should pass the backslash through to the API correctly.
 
 **Status:** Phase II Complete
+
+## Phase III — Implementation Notes
+
+### What I Built
+- Fixed backslash stripping bug in `web/static/ivre/params.js`
+- Added `curtoken += curchar;` in 3 places in the `parse_params` 
+  state machine (states 0, 1, and 2) so backslashes are preserved 
+  in the actual query value sent to the API
+- Wrote a JavaScript test file `tests/test_params_regex.js` with 
+  3 test cases verifying backslash preservation
+
+### Challenges Faced
+- Docker setup for ivre required multiple containers — pivoted to 
+  code-level reproduction instead
+- Node.js was not installed — installed v24.17.0 to run JS tests
+- No existing JS test suite in the project, so wrote a standalone 
+  Node.js test file
+
+### Testing Strategy
+- Created `tests/test_params_regex.js` with 3 unit tests:
+  - Test 1: backslash preserved in regex filter (`\.google\.`)
+  - Test 2: normal filter without backslash still works
+  - Test 3: multiple backslashes preserved (`\d+\.\d+`)
+- All 3 tests pass: `3 passed, 0 failed`
+
+### Code Changes
+- **Branch:** https://github.com/aishsidya0402-netizen/ivre/tree/fix-issue-1486
+- **Files modified:** `web/static/ivre/params.js`
+- **Test file added:** `tests/test_params_regex.js`
+
+**Status:** Phase III Complete
