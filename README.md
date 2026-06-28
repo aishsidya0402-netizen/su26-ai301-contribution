@@ -100,3 +100,17 @@ working branch.
 - **Test file added:** `tests/test_params_regex.js`
 
 **Status:** Phase III Complete
+
+## Phase IV — Pull Request
+
+**PR Link:** https://github.com/ivre/ivre/pull/1912
+
+**What I contributed:** Fixed backslash escape characters being stripped 
+from regex filter input in the web interface by correcting the 
+`parse_params` state machine in `web/static/ivre/params.js`.
+
+**Maintainer Feedback:** Awaiting review — tagged @p-l- in PR comment.
+
+**Status:** Awaiting review
+
+**Status:** Phase IV Complete
