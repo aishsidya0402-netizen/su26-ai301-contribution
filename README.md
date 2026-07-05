@@ -114,3 +114,9 @@ from regex filter input in the web interface by correcting the
 **Status:** Awaiting review
 
 **Status:** Phase IV Complete
+
+**Maintainer Feedback:** @p-l- responded and implemented a more 
+complete fix in PR #1913 that extended the solution to the backend 
+and the new web UI. My contribution directly prompted the fix.
+
+**Status:** Closed — fix implemented by maintainer in PR #1913
