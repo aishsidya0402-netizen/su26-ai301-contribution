@@ -1,5 +1,7 @@
 # AI301 Contribution Log — Aisha
 
+## Cycle 1
+
 ## Phase I — Issue Selection
 
 **Issue:** [Escape character not working while using regular expressions in web interface #1486](https://github.com/ivre/ivre/issues/1486)
@@ -115,8 +117,23 @@ from regex filter input in the web interface by correcting the
 
 **Status:** Phase IV Complete
 
-**Maintainer Feedback:** @p-l- responded and implemented a more 
-complete fix in PR #1913 that extended the solution to the backend 
-and the new web UI. My contribution directly prompted the fix.
 
-**Status:** Closed — fix implemented by maintainer in PR #1913
+## Cycle 2
+
+## Phase I — Issue Selection
+
+**Issue:**  Rework UI of settings wear favorite screen to use Material3 #6300
+
+**Problem Summary:**
+The Home Assistant Android app's Wear OS settings "favorites" screen (LoadSettingsHomeView) is still built with the app's legacy XML-based UI system. The maintainers are migrating the app to Jetpack Compose and Material3, and this screen is one of several tracked under a parent migration issue (#5420, "Migrate to material 3") that still needs to be reworked.
+
+**Why I Chose This Issue:**
+I chose issue #6300, "Rework UI of settings wear favorite screen to use Material3," because it's a well-scoped UI migration task in a large, actively maintained project, and it lets me build Android/Kotlin experience alongside my Python background. It's labeled good first issue by a maintainer, and sits under a larger tracked migration effort (parent issue #5420) that's still early — no risk of competing with other contributors for it.
+## I'm interested in this because:
+
+It's concrete and self-contained: port one screen (LoadSettingsHomeView) from XML to Compose/Material3, not an open-ended request.
+Home Assistant has real maintainer engagement — issues here are triaged deliberately, not left stale.
+I want to learn how a mature Android codebase handles a large-scale UI framework migration, which I haven't worked with before.
+
+From reading the issue, the problem is that this screen still uses the app's older XML view system, inconsistent with the rest of the app now that most screens have moved to Compose/Material3. My contribution brings this screen in line with that effort.
+Commented on the issue to indicate I'd be working on it,and checked the claim box on the course tracker sheet. 
