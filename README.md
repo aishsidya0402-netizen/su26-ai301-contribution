@@ -146,3 +146,36 @@ Before settling on this issue, I checked several other candidates and ruled them
 Commented on the issue to indicate I'd be working on it, and checked the claim box on the course tracker sheet.
 
 **Status:** Phase I Complete
+
+
+## Phase II — Reproduce & Plan
+Reproduction Process
+Environment Setup:
+Forked and cloned home-assistant/android to a local Windows machine. Hit a "Filename too long" error during the initial clone, caused by long auto-generated screenshot-test filenames combined with Windows' default 260-character path limit. Fixed by enabling git config --global core.longpaths true and enabling LongPathsEnabled in the Windows registry, then re-cloning successfully.
+Installed Android Studio (Quail 2 / 2026.1.2) and opened the project. First Gradle sync took about 36 minutes and required accepting the Android SDK license agreement and installing an additional required plugin (gradle-consistent-versions by Palantir Technologies, already a dependency of this project's build setup). Sync completed with only pre-existing deprecation warnings unrelated to my changes.
+Working branch: https://github.com/aishsidya0402-netizen/android/tree/fix-issue-6300
+
+## Steps to Reproduce:
+
+1. Open wear/src/main/kotlin/io/homeassistant/companion/android/settings/wear/views/SettingsWearHomeView.kt
+2. Look at the import statements, specifically lines 5–6
+3. Expected: This screen should import and use Material3 components (androidx.compose.material3.*) and the app's existing custom Material3 components, consistent with already-migrated screens elsewhere in the app.
+4. **Actual:** The file imports androidx.compose.material.IconButton and androidx.compose.material.TopAppBar — the older Material2 (M2) Compose components, not Material3.
+5. Confirmed this is a real, current gap (not already fixed) by searching the project for androidx.compose.material3.TopAppBar usage in other files (Find in Files), which surfaced two already-migrated files (HAComposeCatalogScreen.kt, HATopBar.kt) that use the Material3 version — proving the target pattern exists elsewhere in the codebase but hasn't been applied to this screen yet.
+
+## Solution Plan
+
+**Understand:**  LoadSettingsHomeView (in SettingsWearHomeView.kt) currently imports and uses androidx.compose.material.IconButton and androidx.compose.material.TopAppBar (Material2), rather than the Material3-based components already used elsewhere in the app.
+Match: The app already has a reusable custom component, HATopBar (common/compose/composable/HATopBar.kt), which wraps androidx.compose.material3.TopAppBar and supports optional help/back/close buttons via its parameters. Other already-migrated screens (e.g., HAComposeCatalogScreen.kt) also import directly from androidx.compose.material3 for components like Scaffold, Text, and NavigationBar.
+Plan:
+
+## Replace the androidx.compose.material.TopAppBar import/usage in SettingsWearHomeView.kt with the app's existing HATopBar composable, passing the appropriate title and whichever of onBackClick/onCloseClick/onHelpClick matches this screen's current back-navigation behavior.
+
+Replace androidx.compose.material.IconButton with androidx.compose.material3.IconButton directly, since no custom wrapper exists for this component.
+Update any related color/theming calls if HATopBar expects theme values from LocalHAColorScheme rather than the current colorResource usage.
+Confirm HomeAssistantAppTheme (already imported in this file) is Material3-compatible, since HATopBar depends on LocalHAColorScheme.
+
+## Review: Will check the project's CONTRIBUTING.md and existing pull request conventions before opening my PR, including how the linked PR for a sibling migration task in this same batch structured its changes.
+Evaluate: Will manually verify the screen renders with the same title and back-button behavior as before, just using Material3 styling. Will check whether the module's screenshotTest source set has existing tests for this screen that need updating to reflect the new components.
+
+**Status:** Phase II Complete
