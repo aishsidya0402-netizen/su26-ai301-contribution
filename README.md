@@ -125,15 +125,24 @@ from regex filter input in the web interface by correcting the
 **Issue:**  Rework UI of settings wear favorite screen to use Material3 #6300
 
 **Problem Summary:**
-The Home Assistant Android app's Wear OS settings "favorites" screen (LoadSettingsHomeView) is still built with the app's legacy XML-based UI system. The maintainers are migrating the app to Jetpack Compose and Material3, and this screen is one of several tracked under a parent migration issue (#5420, "Migrate to material 3") that still needs to be reworked.
+The Home Assistant Android app's Wear OS settings "favorites" screen (LoadSettingsHomeView, in SettingsWearHomeView.kt) is already built with Jetpack Compose, but still uses the older Material2 design system (androidx.compose.material.IconButton, androidx.compose.material.TopAppBar) rather than Material3. The maintainers are migrating the app to Material3 throughout, and this screen is one of several tracked under a parent migration issue (#5420, "Migrate to material 3") that still needs to be reworked.
 
 **Why I Chose This Issue:**
-I chose issue #6300, "Rework UI of settings wear favorite screen to use Material3," because it's a well-scoped UI migration task in a large, actively maintained project, and it lets me build Android/Kotlin experience alongside my Python background. It's labeled good first issue by a maintainer, and sits under a larger tracked migration effort (parent issue #5420) that's still early — no risk of competing with other contributors for it.
+I chose issue #6300, "Rework UI of settings wear favorite screen to use Material3," because it's a well-scoped UI migration task in a widely-used, actively maintained project, and it gives me a chance to build Android/Kotlin experience alongside my existing Python background. The issue is labeled good first issue by a maintainer (TimoPtr), and it sits under a larger tracked migration initiative (parent issue #5420, "Migrate to material 3") that currently has one of its six sub-tasks completed, so it's an active area of the project, but not one where I'm racing other contributors for a spot.
+
+
 ## I'm interested in this because:
+1. The task is concrete and self-contained: update one screen (LoadSettingsHomeView) from Material2 Compose components to Material3, rather than an open-ended feature request.
+  
+2. Other sibling issues in the same migration batch (a separate but related tracking issue, #6289) already have contributors actively working on them, so I can look at how those are being approached for conventions once work is underway.
+3. Home Assistant is a large, active project with real maintainer engagement, issues in this area are being triaged and labeled deliberately, not left to go stale.
+   
+4. I want to learn how a mature Android codebase structures a large-scale UI framework migration, since that's a pattern I haven't worked with before.
 
-It's concrete and self-contained: port one screen (LoadSettingsHomeView) from XML to Compose/Material3, not an open-ended request.
-Home Assistant has real maintainer engagement — issues here are triaged deliberately, not left stale.
-I want to learn how a mature Android codebase handles a large-scale UI framework migration, which I haven't worked with before.
+ From reading the issue and inspecting the code, I understand the current problem is that this screen already uses Jetpack Compose, but imports and renders with older Material2 components (IconButton, TopAppBar from androidx.compose.material) instead of Material3, which is inconsistent with the rest of the app now that most other screens have completed this migration. My contribution will bring this screen in line with the rest of the migration effort.
 
-From reading the issue, the problem is that this screen still uses the app's older XML view system, inconsistent with the rest of the app now that most screens have moved to Compose/Material3. My contribution brings this screen in line with that effort.
-Commented on the issue to indicate I'd be working on it,and checked the claim box on the course tracker sheet. 
+Before settling on this issue, I checked several other candidates and ruled them out: good first issue-labeled bugs on Apache Airflow and Apache Beam were consistently claimed within hours of being posted every time I checked; an ArgoCD bug I found (#28701) was well-documented but un-triaged by any maintainer, which felt riskier for a first attempt at the project; and a Hindi-locale translation issue wasn't a fit since I don't speak Hindi and didn't want to submit machine-translated content I couldn't verify myself.
+
+Commented on the issue to indicate I'd be working on it, and checked the claim box on the course tracker sheet.
+
+**Status:** Phase I Complete
