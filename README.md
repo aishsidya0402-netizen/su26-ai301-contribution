@@ -179,3 +179,35 @@ Confirm HomeAssistantAppTheme (already imported in this file) is Material3-compa
 Evaluate: Will manually verify the screen renders with the same title and back-button behavior as before, just using Material3 styling. Will check whether the module's screenshotTest source set has existing tests for this screen that need updating to reflect the new components.
 
 **Status:** Phase II Complete
+
+## Phase III — Build
+
+Implementation Notes
+
+## What I built:
+
+Replaced the Material2 TopAppBar/IconButton implementation inside SettingsWearTopAppBar (in SettingsWearHomeView.kt) with the app's existing Material3 HATopBar composable (common/compose/composable/HATopBar.kt), using its onBackClick/onHelpClick convenience overload.
+Removed the now-unused Material2 and iconics imports: androidx.compose.material.IconButton, androidx.compose.material.TopAppBar, androidx.compose.ui.graphics.ColorFilter, androidx.compose.ui.res.colorResource, androidx.compose.ui.res.stringResource, com.mikepenz.iconics.compose.Image, com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial.
+Added import io.homeassistant.companion.android.common.compose.composable.HATopBar.
+Kept the public signature of SettingsWearTopAppBar (title, onBackClicked, modifier, docsLink) unchanged, so all 5 existing call sites inside LoadSettingsHomeView's nav graph required no changes.
+This swaps the rendered icons from the iconics CommunityMaterial glyph set to standard Material icons (Icons.AutoMirrored.Rounded.ArrowBack, Icons.AutoMirrored.Outlined.HelpOutline), matching the pattern already used in migrated screens like HAComposeCatalogScreen.kt.
+
+**Challenges Faced:**
+
+Hit a KSP compiler crash (ksp.org.jetbrains.kotlin.utils.exceptions.KotlinIllegalArgumentExceptionWithAttachments) during :common:kspDebugKotlin while trying to build and run on a freshly created Wear OS emulator (Wear OS Large Round, API 37). This appears to be an internal KSP/analysis-API tooling issue rather than something caused by my code change, since the edit itself is a straightforward Compose component swap with no annotation-processing involvement.
+Resolved via Android Studio's File → Invalidate Caches / Restart, followed by a full Gradle re-sync.
+Setting up a Wear OS emulator from scratch (Device Manager → Create Virtual Device → Wear OS → Large Round → API 37 system image download) took longer than expected due to the above build issue; on-device manual verification and before/after screenshots are still pending as a result.
+Initial git push failed due to a typo in the branch name (fix-issue-630 instead of fix-issue-6300); resolved by re-running the push with the correct branch name.
+
+**Testing Strategy:**
+
+Manual on-device verification is still pending, blocked temporarily by the KSP/build tooling issue above (now resolved via cache invalidation); plan to complete this as soon as possible and add before/after screenshots.
+Plan to add a screenshot test under wear/src/screenshotTest for SettingsWearTopAppBar, following the project's GIVEN-WHEN-THEN naming convention (per developers.home-assistant.io/docs/android/testing/introduction), covering: (1) no help icon shown when docsLink is null/blank, (2) help icon shown when docsLink is present, (3) back icon triggers onBackClicked.
+Ran KTLint locally (./gradlew :build-logic:convention:ktlintFormat ktlintFormat) per the project's code style guide before committing.
+
+**Code Changes:**
+
+Branch: https://github.com/aishsidya0402-netizen/android/tree/fix-issue-6300
+Commit: "Migrate SettingsWearTopAppBar to Material3 HATopBar" (3 files changed, 20 insertions, 32 deletions)
+
+**Status:** Phase III Complete (manual on-device screenshots and screenshot tests to follow as immediate next steps)
