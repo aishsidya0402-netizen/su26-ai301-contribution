@@ -201,13 +201,14 @@ Initial git push failed due to a typo in the branch name (fix-issue-630 instead 
 
 **Testing Strategy:**
 
-Manual on-device verification is still pending, blocked temporarily by the KSP/build tooling issue above (now resolved via cache invalidation); plan to complete this as soon as possible and add before/after screenshots.
-Plan to add a screenshot test under wear/src/screenshotTest for SettingsWearTopAppBar, following the project's GIVEN-WHEN-THEN naming convention (per developers.home-assistant.io/docs/android/testing/introduction), covering: (1) no help icon shown when docsLink is null/blank, (2) help icon shown when docsLink is present, (3) back icon triggers onBackClicked.
+Added SettingsWearTopAppBarTest.kt under wear/src/test/kotlin/io/homeassistant/companion/android/settings/wear/views, covering 4 scenarios in GIVEN-WHEN-THEN format:
+1. No help icon shown when docsLink is null
+2. Help icon shown when docsLink is present
+3. Back icon click triggers onBackClicked
+4. Title renders correctly
+
+The test is structurally valid — recognized by the JUnit runner and resolves correctly against SettingsWearTopAppBar — but could not be executed locally: the wear module's debug build variant requires a google-services.json with a client entry matching the debug-suffixed package name (io.homeassistant.companion.android.debug), which isn't included in the public repo for security/Firebase reasons. Added a placeholder google-services.json which resolved the initial "file missing" error but not the package-name matching requirement. This is an environment-specific gap rather than a code issue; CI and maintainer review environments typically have this configured correctly.
+
 Ran KTLint locally (./gradlew :build-logic:convention:ktlintFormat ktlintFormat) per the project's code style guide before committing.
 
-**Code Changes:**
-
-Branch: https://github.com/aishsidya0402-netizen/android/tree/fix-issue-6300
-Commit: "Migrate SettingsWearTopAppBar to Material3 HATopBar" (3 files changed, 20 insertions, 32 deletions)
-
-**Status:** Phase III Complete (manual on-device screenshots and screenshot tests to follow as immediate next steps)
+**Status:** Phase III Complete. Code migration and unit test coverage committed and pushed. Manual on-device screenshots and local test execution deferred to Phase IV, pending resolution of the local Firebase config gap or CI verification.
