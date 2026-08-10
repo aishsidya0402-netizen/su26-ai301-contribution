@@ -201,14 +201,28 @@ Initial git push failed due to a typo in the branch name (fix-issue-630 instead 
 
 **Testing Strategy:**
 
-Added SettingsWearTopAppBarTest.kt under wear/src/test/kotlin/io/homeassistant/companion/android/settings/wear/views, covering 4 scenarios in GIVEN-WHEN-THEN format:
+Added `SettingsWearTopAppBarTest.kt`, covering 4 scenarios in GIVEN-WHEN-THEN format:
 1. No help icon shown when docsLink is null
 2. Help icon shown when docsLink is present
 3. Back icon click triggers onBackClicked
 4. Title renders correctly
 
-The test is structurally valid — recognized by the JUnit runner and resolves correctly against SettingsWearTopAppBar — but could not be executed locally: the wear module's debug build variant requires a google-services.json with a client entry matching the debug-suffixed package name (io.homeassistant.companion.android.debug), which isn't included in the public repo for security/Firebase reasons. Added a placeholder google-services.json which resolved the initial "file missing" error but not the package-name matching requirement. This is an environment-specific gap rather than a code issue; CI and maintainer review environments typically have this configured correctly.
+I initially placed this test under `wear/src/test/...`, since the migrated composable is used from a wear-related screen. However, both an AI code review (Copilot, on the open PR) and a maintainer review caught that the actual production code lives in the `:app` module's `full` flavor (`app/src/full/.../SettingsWearHomeView.kt`), and `:wear` does not depend on `:app` — so the test as originally placed would not have compiled in CI. I moved the test to `app/src/testFull/...` to match the production code's module and flavor, which resolved all compile errors.
 
-Ran KTLint locally (./gradlew :build-logic:convention:ktlintFormat ktlintFormat) per the project's code style guide before committing.
+I attempted to run the test locally, both before and after the move. In both cases I hit the same blocker: the `full` debug build variant requires a `google-services.json` with a client entry matching the debug-suffixed package name, which isn't included in the public repo (likely for Firebase/security reasons). Running `./gradlew :app:testFullDebugUnitTest` after the move confirmed this is not module-specific — it's a general gap in the public repo's local setup, not something caused by my test's original placement. Added a placeholder `google-services.json` at one point, which resolved the initial "file missing" error but not the package-name matching requirement underneath it. This is an environment-specific gap rather than a code issue; CI and maintainer review environments typically have this configured correctly.
+
+Ran KTLint locally (`./gradlew :build-logic:convention:ktlintFormat ktlintFormat`) per the project's code style guide before committing.
 
 **Status:** Phase III Complete. Code migration and unit test coverage committed and pushed. Manual on-device screenshots and local test execution deferred to Phase IV, pending resolution of the local Firebase config gap or CI verification.
+
+## Phase IV — Submit
+
+### Challenges Faced (continued)
+
+After opening the PR, I hit a CLA (Contributor License Agreement) check failure. This took two steps to resolve: first, linking my secondary school email (used in my commits) to my GitHub account; second, actually signing the Home Assistant CLA itself, since those turned out to be two separate requirements. Both are now resolved.
+
+A maintainer (Joris Pelgröm) also left review feedback: confirming the test-module issue described above, requesting screenshot testing for future Compose work, and asking whether this PR's scope matches the full intent of issue #6300 (since the issue may cover more than the top-bar migration I implemented). I replied clarifying my intended scope and asked for guidance on whether to expand it. Given my course deadline, I was upfront that I likely won't add screenshot testing before tonight's submission, but offered to follow up afterward.
+
+### Status
+
+Phase IV: PR submitted (https://github.com/home-assistant/android/pull/7311), CLA signed, test-module issue fixed, and marked Ready for Review. Awaiting maintainer response on PR scope and further review feedback.
